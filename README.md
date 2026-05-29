@@ -45,46 +45,7 @@ Download the latest preview build from [GitHub Releases](https://github.com/stan
 
 Developer ID signing and Apple notarization are still on the roadmap, so macOS may show an extra Gatekeeper warning for early builds.
 
-You can also build AudioPilot locally from source:
-
-```sh
-xcodebuild \
-  -project AudioPilot.xcodeproj \
-  -scheme AudioPilot \
-  -configuration Debug \
-  -derivedDataPath /private/tmp/AudioPilotDerivedData \
-  build
-```
-
-Then open:
-
-```sh
-open /private/tmp/AudioPilotDerivedData/Build/Products/Debug/AudioPilot.app
-```
-
 AudioPilot appears in the menu bar.
-
-## Develop
-
-Requirements:
-
-- macOS 13 Ventura or newer
-- Xcode 15 or newer recommended
-- Swift 5.9 or newer
-
-Run tests:
-
-```sh
-swift test
-```
-
-Build with SwiftPM:
-
-```sh
-swift build
-```
-
-Use the Xcode project when you need the real macOS app bundle, icon, sandbox entitlements, and menu bar behavior.
 
 ## Roadmap
 
@@ -99,7 +60,7 @@ AudioPilot should stay small: a quiet Mac menu bar app that tells you when your 
 
 **Next**
 
-- Add localization support,
+- Add localization support.
 - Improve notification wording if device names are confusing.
 - Consider a separate notification sound toggle.
 - Improve menu bar icon contrast across macOS appearances.
@@ -113,20 +74,13 @@ AudioPilot should stay small: a quiet Mac menu bar app that tells you when your 
 
 - Microphone access, audio recording, per-app routing, volume mixing, telemetry, network sync, virtual audio drivers, kernel extensions, or system extensions.
 
-## Project Notes
+## For Developers
 
-AudioPilot uses public Apple APIs:
+Want to build from source or contribute? Start here:
 
-- CoreAudio for output device changes.
-- UserNotifications for local notifications.
-- ServiceManagement for launch at login.
-- AppKit for the menu bar app.
-
-More detail lives in the docs:
-
+- [Contributing](CONTRIBUTING.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Release guide](docs/RELEASE.md)
-- [Contributing](CONTRIBUTING.md)
 - [Security](SECURITY.md)
 
 ## License
