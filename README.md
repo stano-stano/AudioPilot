@@ -41,9 +41,11 @@ The only prompt you should normally see is the macOS notification permission pro
 
 ## Install
 
-A signed and notarized public download is not published yet.
+Download the latest preview build from [GitHub Releases](https://github.com/stano-stano/AudioPilot/releases).
 
-For now, build AudioPilot locally from source:
+Developer ID signing and Apple notarization are still on the roadmap, so macOS may show an extra Gatekeeper warning for early builds.
+
+You can also build AudioPilot locally from source:
 
 ```sh
 xcodebuild \

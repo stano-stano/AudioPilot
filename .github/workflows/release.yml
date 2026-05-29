@@ -1,0 +1,118 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v0.1.0"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-dmg:
+    name: Build DMG And Create Release
+    runs-on: macos-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Resolve release tag
+        id: release
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build AudioPilot
+        run: |
+          xcodebuild \
+            -project AudioPilot.xcodeproj \
+            -scheme AudioPilot \
+            -configuration Release \
+            -derivedDataPath "$RUNNER_TEMP/AudioPilotDerivedData" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="-" \
+            DEVELOPMENT_TEAM="" \
+            build
+
+      - name: Package DMG
+        run: |
+          VERSION="${{ steps.release.outputs.tag }}"
+          VERSION="${VERSION#v}"
+          APP_PATH="$RUNNER_TEMP/AudioPilotDerivedData/Build/Products/Release/AudioPilot.app"
+          DMG_ROOT="$RUNNER_TEMP/AudioPilotDmgRoot"
+          DMG_PATH="$RUNNER_TEMP/AudioPilot-${VERSION}-macos.dmg"
+          CHECKSUM_PATH="$RUNNER_TEMP/AudioPilot-${VERSION}-macos.dmg.sha256"
+
+          codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+
+          mkdir -p "$DMG_ROOT"
+          ditto "$APP_PATH" "$DMG_ROOT/AudioPilot.app"
+          ln -s /Applications "$DMG_ROOT/Applications"
+
+          hdiutil create \
+            -volname AudioPilot \
+            -srcfolder "$DMG_ROOT" \
+            -ov \
+            -format UDZO \
+            "$DMG_PATH"
+
+          hdiutil verify "$DMG_PATH"
+          shasum -a 256 "$DMG_PATH" > "$CHECKSUM_PATH"
+
+          echo "dmg_path=$DMG_PATH" >> "$GITHUB_ENV"
+          echo "checksum_path=$CHECKSUM_PATH" >> "$GITHUB_ENV"
+
+      - name: Write release notes
+        run: |
+          cat > "$RUNNER_TEMP/release-notes.md" <<'EOF'
+          AudioPilot is a tiny Mac menu bar app that tells you when your sound output changes.
+
+          ### What is included
+
+          - Menu bar only macOS app.
+          - Native notification when the default audio output changes.
+          - Current output device shown in the menu.
+          - Optional "Speak device name" toggle.
+          - Optional "Launch at login" toggle.
+          - No microphone access, no telemetry, no network.
+
+          ### Install
+
+          1. Download `AudioPilot-0.1.0-macos.dmg`.
+          2. Open the DMG.
+          3. Drag `AudioPilot.app` to Applications.
+          4. Launch AudioPilot.
+          5. Allow notifications when macOS asks.
+
+          ### Note
+
+          This is an early preview release. Developer ID signing and Apple notarization are still on the roadmap, so macOS may show an extra Gatekeeper warning.
+
+          SHA-256 checksum is attached as a separate `.sha256` file.
+          EOF
+
+      - name: Create GitHub Release
+        run: |
+          TAG="${{ steps.release.outputs.tag }}"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$dmg_path" "$checksum_path" --clobber
+          else
+            gh release create "$TAG" \
+              "$dmg_path" \
+              "$checksum_path" \
+              --title "AudioPilot ${TAG#v}" \
+              --notes-file "$RUNNER_TEMP/release-notes.md" \
+              --prerelease
+          fi
