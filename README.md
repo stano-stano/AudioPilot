@@ -84,6 +84,35 @@ swift build
 
 Use the Xcode project when you need the real macOS app bundle, icon, sandbox entitlements, and menu bar behavior.
 
+## Roadmap
+
+AudioPilot should stay small: a quiet Mac menu bar app that tells you when your sound output changes. This roadmap is a guide, not a promise of dates.
+
+**Now**
+
+- Keep the app reliable on macOS 13 Ventura and newer.
+- Test output switching with more real devices, including AirPods, displays, docks, USB audio interfaces, and built-in speakers.
+- Prepare the first signed and notarized public release.
+- Add a README screenshot or short demo GIF.
+
+**Next**
+
+- Add localization support, starting with Slovak.
+- Improve notification wording if device names are confusing.
+- Consider a separate notification sound toggle.
+- Improve menu bar icon contrast across macOS appearances.
+
+**Later**
+
+- Add a small preferences window if the menu becomes too crowded.
+- Add an option to ignore selected devices.
+- Add release automation for signed builds and checksums.
+- Consider Homebrew Cask distribution after notarized releases are stable.
+
+**Not Planned**
+
+- Microphone access, audio recording, per-app routing, volume mixing, telemetry, network sync, virtual audio drivers, kernel extensions, or system extensions.
+
 ## Project Notes
 
 AudioPilot uses public Apple APIs:
