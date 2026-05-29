@@ -97,7 +97,7 @@ AudioPilot should stay small: a quiet Mac menu bar app that tells you when your 
 
 **Next**
 
-- Add localization support, starting with Slovak.
+- Add localization support,
 - Improve notification wording if device names are confusing.
 - Consider a separate notification sound toggle.
 - Improve menu bar icon contrast across macOS appearances.
@@ -106,8 +106,6 @@ AudioPilot should stay small: a quiet Mac menu bar app that tells you when your 
 
 - Add a small preferences window if the menu becomes too crowded.
 - Add an option to ignore selected devices.
-- Add release automation for signed builds and checksums.
-- Consider Homebrew Cask distribution after notarized releases are stable.
 
 **Not Planned**
 
