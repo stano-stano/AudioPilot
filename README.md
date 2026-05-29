@@ -4,58 +4,46 @@
   <img src="Resources/Assets.xcassets/AppIcon.appiconset/icon_256x256.png" width="128" alt="AudioPilot app icon">
 </p>
 
-AudioPilot is a tiny, privacy-friendly macOS menu bar app that tells you when the default audio output device changes.
+**A tiny Mac menu bar app that tells you when your sound output changes.**
+
+AudioPilot sits quietly in the menu bar. When macOS switches from your speakers to AirPods, a monitor, a dock, or another output device, it shows a native notification:
 
 ```text
 Audio output changed
 Now playing through: AirPods Pro
 ```
 
-It is built for people who switch between speakers, displays, headphones, docks, AirPods, and audio interfaces all day and want a quiet confirmation when macOS changes the route.
+That is it. Small, useful, and out of the way.
 
-![Platform](https://img.shields.io/badge/platform-macOS%2013%2B-lightgrey)
+![macOS 13+](https://img.shields.io/badge/macOS-13%2B-lightgrey)
 ![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)
-![License](https://img.shields.io/badge/license-MIT-blue)
-![Privacy](https://img.shields.io/badge/network-none-brightgreen)
+![MIT](https://img.shields.io/badge/license-MIT-blue)
+![No network](https://img.shields.io/badge/network-none-brightgreen)
 
-## Features
+## What You Get
 
-- Menu bar only app, with no Dock icon.
-- Native macOS notification when the default output device changes.
-- Current output device shown in the menu.
-- Optional "Speak device name" mode, off by default.
-- Optional "Launch at login" through modern macOS APIs.
-- App Sandbox enabled with a minimal entitlement.
-- No telemetry, no analytics, no network calls.
+- A quiet menu bar app with no Dock icon.
+- A notification when the default audio output changes.
+- The current output device in the menu.
+- A toggle for notifications.
+- An optional "Speak device name" toggle, off by default.
+- An optional "Launch at login" toggle.
 
-## Privacy And Permissions
+## Privacy
 
-AudioPilot uses only public Apple APIs:
+AudioPilot is local-only.
 
-- CoreAudio, to observe the system default output device property.
-- UserNotifications, to display local macOS notifications.
-- ServiceManagement, to register the app as a launch-at-login item when requested.
-- AppKit, for the menu bar UI and optional speech.
+It does not use the microphone. It does not record, listen to, inspect, or upload audio. It does not use the network. It does not need Accessibility, Screen Recording, AppleScript, shell scripts, system extensions, or virtual audio drivers.
 
-It does not request microphone access. It does not inspect, record, process, or transmit audio content. It does not use Accessibility, Screen Recording, AppleScript, runtime shell scripts, kernel extensions, system extensions, virtual audio drivers, or private APIs.
+It only asks macOS one simple question: "What is the current output device called?"
 
-The only macOS prompt you should normally see is the notification permission prompt. macOS may also show a Login Items confirmation if you enable launch at login.
+The only prompt you should normally see is the macOS notification permission prompt.
 
 ## Install
 
-For now, AudioPilot is source-first. A signed and notarized public DMG should be attached to GitHub Releases once maintainers have configured Developer ID signing.
+A signed and notarized public download is not published yet.
 
-Local development DMGs may be useful for testing installation flow, but they are not a substitute for a notarized public release.
-
-## Build
-
-Requirements:
-
-- macOS 13 Ventura or newer
-- Xcode 15 or newer recommended
-- Swift 5.9 or newer
-
-Build the app bundle:
+For now, build AudioPilot locally from source:
 
 ```sh
 xcodebuild \
@@ -66,100 +54,52 @@ xcodebuild \
   build
 ```
 
-Run tests:
-
-```sh
-xcodebuild \
-  -project AudioPilot.xcodeproj \
-  -scheme AudioPilot \
-  -configuration Debug \
-  -derivedDataPath /private/tmp/AudioPilotDerivedData \
-  test
-```
-
-Keeping DerivedData outside the repository is recommended when the checkout is stored in iCloud Drive. FileProvider extended attributes in iCloud-managed folders can make local ad-hoc signing fail with resource fork/Finder metadata errors.
-
-You can also compile the Swift sources and run the pure logic tests with SwiftPM:
-
-```sh
-swift build
-swift test
-```
-
-SwiftPM is useful for validation and test feedback. Use the Xcode project when you want the real macOS `.app` bundle with `LSUIElement`, App Sandbox entitlements, resources, and local app signing.
-
-## Run
-
-After a Terminal build, the app bundle is located at:
-
-```text
-/private/tmp/AudioPilotDerivedData/Build/Products/Debug/AudioPilot.app
-```
-
-Open it from Finder or run:
+Then open:
 
 ```sh
 open /private/tmp/AudioPilotDerivedData/Build/Products/Debug/AudioPilot.app
 ```
 
-AudioPilot appears only in the menu bar.
+AudioPilot appears in the menu bar.
 
-## Create A Local DMG
+## Develop
 
-For a local smoke test, create a simple DMG containing `AudioPilot.app` and an `Applications` shortcut:
+Requirements:
+
+- macOS 13 Ventura or newer
+- Xcode 15 or newer recommended
+- Swift 5.9 or newer
+
+Run tests:
 
 ```sh
-DMG_ROOT="$(mktemp -d)"
-ditto /private/tmp/AudioPilotDerivedData/Build/Products/Debug/AudioPilot.app "$DMG_ROOT/AudioPilot.app"
-ln -s /Applications "$DMG_ROOT/Applications"
-hdiutil create -volname AudioPilot -srcfolder "$DMG_ROOT" -ov -format UDZO AudioPilot-0.1.0-macos.dmg
+swift test
 ```
 
-For a public GitHub release, build a signed Release app, notarize it, staple the ticket, package it into a DMG, notarize/staple the DMG, and publish the checksum. See [docs/RELEASE.md](docs/RELEASE.md).
+Build with SwiftPM:
 
-## Settings
+```sh
+swift build
+```
 
-User-facing settings are stored in `UserDefaults`:
+Use the Xcode project when you need the real macOS app bundle, icon, sandbox entitlements, and menu bar behavior.
 
-- Show notifications, default on.
-- Speak device name, default off.
+## Project Notes
 
-Launch at login is managed by macOS through `SMAppService`; AudioPilot does not write custom launch agents.
+AudioPilot uses public Apple APIs:
 
-## Project Shape
+- CoreAudio for output device changes.
+- UserNotifications for local notifications.
+- ServiceManagement for launch at login.
+- AppKit for the menu bar app.
 
-- `Sources/AudioPilot`: app lifecycle, menu bar UI, CoreAudio monitoring, notifications, speech, login item handling.
-- `Sources/AudioPilotCore`: small testable value types and utility logic.
-- `Tests/AudioPilotTests`: unit tests for logic that does not require CoreAudio.
-- `Resources`: app icon asset catalog and template status bar icon.
-- `.github`: issue templates, pull request template, and CI workflow.
-- `docs`: architecture, release, and GitHub publishing notes.
+More detail lives in the docs:
 
-## Contributing
-
-Small, focused contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
-
-The most important project rules are simple:
-
-- Keep the app local-only.
-- Use public Apple APIs.
-- Do not add telemetry, analytics, or network behavior.
-- Do not add sensitive permission requirements unless there is a clear, documented reason and community agreement.
-
-## Signing And Notarization
-
-The project is configured for local ad-hoc signing so it can be built and tested without a paid developer account.
-
-Before a public release, maintainers should:
-
-1. Set a stable production bundle identifier.
-2. Configure an Apple Developer Team in Xcode.
-3. Create a signed Release archive.
-4. Use Hardened Runtime for distribution.
-5. Notarize the app or final DMG with Apple.
-6. Staple the notarization ticket.
-7. Publish a GitHub Release with the DMG, checksum, source archive, and release notes.
+- [Architecture](docs/ARCHITECTURE.md)
+- [Release guide](docs/RELEASE.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
 
 ## License
 
-AudioPilot is available under the MIT License. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).

@@ -7,7 +7,7 @@ Use this checklist when creating the public GitHub repository.
 Recommended values:
 
 - Repository name: `AudioPilot`
-- Description: `Tiny privacy-friendly macOS menu bar app that notifies you when the default audio output changes.`
+- Description: `A tiny Mac menu bar app that tells you when your sound output changes.`
 - Visibility: Public
 - Default branch: `main`
 - License: MIT
@@ -96,5 +96,5 @@ Do not present a locally ad-hoc signed DMG as a polished public release. For pub
 Use this in announcements:
 
 ```text
-AudioPilot is a tiny macOS menu bar app for one very specific annoyance: knowing where your sound is going. It watches the default output device with public CoreAudio APIs and shows a native notification when it changes. No microphone access, no telemetry, no network.
+AudioPilot is a tiny Mac menu bar app for one very specific annoyance: knowing where your sound is going. When your output changes, it tells you. No microphone access, no telemetry, no network.
 ```
