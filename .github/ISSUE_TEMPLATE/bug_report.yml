@@ -1,0 +1,64 @@
+name: Bug report
+description: Report something that is broken or surprising.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing AudioPilot. Clear reproduction steps help a lot.
+  - type: input
+    id: version
+    attributes:
+      label: AudioPilot version
+      description: "Example: 0.1.0, main branch, or commit SHA."
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      description: Open Apple menu -> About This Mac.
+      placeholder: "macOS 14.6"
+    validations:
+      required: true
+  - type: textarea
+    id: devices
+    attributes:
+      label: Audio devices involved
+      description: List the output devices you switched between.
+      placeholder: "MacBook Speakers -> AirPods Pro -> Studio Display"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Launch AudioPilot
+        2. Switch default output to ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: permissions
+    attributes:
+      label: Quick checks
+      options:
+        - label: Notifications are allowed for AudioPilot in System Settings.
+        - label: The app is visible in the menu bar.
+        - label: I tried quitting and relaunching AudioPilot.

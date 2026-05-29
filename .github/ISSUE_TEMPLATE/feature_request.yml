@@ -1,0 +1,47 @@
+name: Feature request
+description: Suggest a small improvement that fits AudioPilot's scope.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        AudioPilot tries to stay tiny, local-only, and permission-light. Feature requests are welcome when they preserve that shape.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      placeholder: "When I switch outputs often, I want..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      placeholder: "Add a menu toggle for..."
+    validations:
+      required: true
+  - type: dropdown
+    id: privacy
+    attributes:
+      label: Does this need new permissions or network access?
+      options:
+        - "No"
+        - "Not sure"
+        - "Yes"
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Mention simpler options or existing macOS behavior.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope fit
+      options:
+        - label: This keeps AudioPilot menu bar only.
+        - label: This keeps AudioPilot local-only.
+        - label: This does not require microphone or Accessibility permissions.

@@ -1,0 +1,22 @@
+name: Privacy or permissions question
+description: Ask about what AudioPilot can see, store, or access.
+title: "[Privacy]: "
+labels:
+  - privacy
+body:
+  - type: markdown
+    attributes:
+      value: |
+        AudioPilot is designed to avoid sensitive permissions. Questions and audits are welcome.
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      placeholder: "Does AudioPilot ever..."
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Optional details about what you are checking or concerned about.

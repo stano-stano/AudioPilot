@@ -1,0 +1,26 @@
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# macOS
+.DS_Store
+
+# Archives and signing artifacts
+*.xcarchive
+*.dSYM
+*.ipa
+*.app
+*.dmg
+*.pkg
+*.cer
+*.p12
+*.mobileprovision
+*.provisionprofile
